@@ -1,0 +1,11 @@
+{
+  "nome": "gurans",
+  "descricao": "Fundo cor de morango (Gurans), texto claro",
+  "fundo": "#B8475A",
+  "faixa": "#F1E3E3",
+  "montanhas": ["#A53E50", "#933647"],
+  "corEtiqueta": "#F1E3E3",
+  "corTitulo": "#FFFFFF",
+  "corTexto": "#F7ECEC",
+  "corMarca": "#FFFFFF"
+}
