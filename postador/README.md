@@ -20,8 +20,9 @@ Você clica em Aprovar
 
 | Arquivo | O que faz |
 |---|---|
-| `marca.json` | Quem é a marca: tom de voz, pilares, CTA, hashtags, buscas de notícias |
-| `templates/*.json` | Cadastro de templates da arte: um arquivo por template (cores) |
+| Painel `/admin` → aba **Postador do Instagram** | Edita a marca e os templates, com prévia ao vivo da arte (salva no Firestore) |
+| `marca.json` e `templates/*.json` | Valores padrão, usados se o Firestore estiver vazio (o botão "importar padrões" do painel copia esses arquivos) |
+| `../public/assets/desenho.js` | Desenho da arte, o mesmo código na prévia do painel e no postador |
 | `gerar.js` | Gera o post e manda para o Telegram |
 | `verificar.js` | Lê os cliques do Telegram uma vez (usado pelo Actions) |
 | `escutar.js` | Fica ouvindo o Telegram e publica na hora (usado ao vivo na aula) |
@@ -72,6 +73,6 @@ Pronto. O workflow **Postador: gerar post** roda todo dia às 9h, e o **Postador
 Para testar na hora, abra a aba **Actions** do GitHub, escolha o workflow e clique em **Run workflow**.
 
 ## Personalizar
-- **Outra marca:** edite `marca.json`.
-- **Novo visual:** copie um arquivo de `templates/`, mude as cores e rode `npm run slide` para ver o resultado.
+- **Marca e visual:** no painel `/admin`, aba **Postador do Instagram**. Lá você cria, duplica, desativa e exclui templates, e a prévia mostra exatamente a arte que será publicada.
+- **Ver as artes no computador:** `npm run slide` gera um exemplo de cada template ativo em `amostras/`.
 - **Horário:** mude o `cron` em `.github/workflows/postador-gerar.yml`. O horário é UTC, ou seja, 3 horas a mais que Brasília.

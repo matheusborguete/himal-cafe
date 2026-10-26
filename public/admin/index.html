@@ -35,6 +35,14 @@
 
   <!-- PAINEL -->
   <section id="tela-painel" hidden>
+    <div class="abas" role="tablist">
+      <button class="aba ativa" data-aba="blog" role="tab">Blog</button>
+      <button class="aba" data-aba="postador" role="tab">Postador do Instagram</button>
+    </div>
+
+    <div id="aba-postador" hidden></div>
+
+    <div id="aba-blog">
     <div class="topo-painel">
       <div><span class="eyebrow">Painel do blog</span><h1>Novo post</h1></div>
     </div>
@@ -77,6 +85,7 @@
       <span class="eyebrow" style="margin:0">Posts publicados</span>
       <ul id="lista" class="lista-posts"></ul>
     </div>
+    </div><!-- /aba-blog -->
   </section>
 </main>
 
@@ -84,6 +93,7 @@
 import { app, db } from "/assets/firebase.js";
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { collection, doc, getDoc, getDocs, setDoc, deleteDoc, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { iniciarPostador } from "/admin/postador.js";
 
 // Usuário digita só "admin-himal"; completamos o e-mail.
 // O mesmo e-mail precisa estar liberado em firestore.rules.
@@ -99,6 +109,17 @@ onAuthStateChanged(auth, (user) => {
   $("sair").hidden = !user;
   if (user) carregarLista();
 });
+
+// ---------- abas ----------
+let postadorIniciado = false;
+document.querySelectorAll(".aba").forEach((botao) => botao.addEventListener("click", () => {
+  const aba = botao.dataset.aba;
+  document.querySelectorAll(".aba").forEach((b) => b.classList.toggle("ativa", b === botao));
+  $("aba-blog").hidden = aba !== "blog";
+  $("aba-postador").hidden = aba !== "postador";
+  document.querySelector("main").classList.toggle("narrow", aba === "blog");
+  if (aba === "postador" && !postadorIniciado) { postadorIniciado = true; iniciarPostador($("aba-postador")); }
+}));
 
 $("form-login").addEventListener("submit", async (e) => {
   e.preventDefault();

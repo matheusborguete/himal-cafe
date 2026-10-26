@@ -70,6 +70,35 @@ textarea{min-height:320px;resize:vertical;line-height:1.6}
 .lista-posts button{background:none;border:0;color:#a1283b;cursor:pointer;font:14px var(--sans)}
 .topo-painel{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
 
+/* abas do painel */
+.abas{display:flex;gap:8px;border-bottom:1px solid var(--linha);margin-bottom:40px}
+.aba{background:none;border:0;border-bottom:2px solid transparent;padding:12px 4px;margin-right:20px;font:500 15px var(--sans);color:var(--pedra);cursor:pointer}
+.aba.ativa{color:var(--grafite);border-bottom-color:var(--gurans)}
+.caixa h2{margin-bottom:4px}
+.link-btn{background:none;border:0;padding:0;font:inherit;font-size:14px;color:var(--gurans);text-decoration:underline;cursor:pointer}
+.link-btn.perigo{color:#a1283b}
+
+/* templates */
+.grade-templates{display:flex;flex-wrap:wrap;gap:20px;margin-top:20px}
+.tpl-card{background:none;border:1px solid var(--linha);padding:0;cursor:pointer;display:flex;flex-direction:column;text-align:left;font:14px var(--sans);color:var(--grafite);transition:transform .2s}
+.tpl-card:hover{transform:translateY(-2px);border-color:var(--grafite)}
+.tpl-card canvas{display:block;width:180px;height:225px}
+.tpl-card span{padding:10px 12px}
+.tpl-card.inativo{opacity:.5}
+.editor{display:grid;grid-template-columns:1fr auto;gap:40px;align-items:start;margin-top:8px}
+.editor canvas{width:360px;height:450px;border:1px solid var(--linha);display:block}
+.cores{display:grid;grid-template-columns:1fr 1fr;gap:10px 20px;margin-top:20px}
+label.cor,label.check{display:flex;align-items:center;gap:10px;text-transform:none;letter-spacing:0;font-size:14px;color:var(--grafite);margin:0}
+label.check{margin-top:20px}
+label.cor input{width:44px;height:36px;padding:2px;border:1px solid var(--linha);background:#fff;cursor:pointer}
+label.check input{width:auto}
+.lista-posts small{font-size:12px}
+
+@media(max-width:860px){
+  .editor{grid-template-columns:1fr}
+  .editor canvas{width:100%;height:auto;aspect-ratio:4/5}
+}
+
 @media(max-width:600px){
   .caixa{padding:22px 16px}
   .wrap{padding:0 16px}

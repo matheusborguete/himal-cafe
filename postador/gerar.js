@@ -8,13 +8,14 @@ import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { buscarNoticias } from "./lib/noticias.js";
 import { gerarPost } from "./lib/gemini.js";
-import { desenharSlide, listarTemplates } from "./lib/slide.js";
-import { lerPosts, gravarPosts, atualizarPost, temasRecentes, marca, RAIZ } from "./lib/estado.js";
+import { desenharSlide } from "./lib/slide.js";
+import { carregarMarca, carregarTemplates } from "./lib/config.js";
+import { lerPosts, gravarPosts, atualizarPost, temasRecentes, RAIZ } from "./lib/estado.js";
 import { salvarNoGitHub, urlPublica } from "./lib/github.js";
 import { enviarRascunho } from "./lib/telegram.js";
 
 export async function gerarEEnviar() {
-  const m = marca();
+  const m = await carregarMarca(); // configurada no painel /admin → aba Postador
   const chatId = process.env.TELEGRAM_CHAT_ID;
   if (!chatId) throw new Error("Falta TELEGRAM_CHAT_ID. Rode 'npm run verificar' depois de mandar um oi para o bot.");
 
@@ -29,10 +30,10 @@ export async function gerarEEnviar() {
 
   // 3. Arte com o próximo template da fila (alterna entre os cadastrados)
   const posts = lerPosts();
-  const templates = listarTemplates();
+  const templates = await carregarTemplates();
   const template = templates[posts.length % templates.length];
   const id = new Date().toISOString().replace(/[-:T]/g, "").slice(0, 14); // ex.: 20261028190512
-  const imagem = desenharSlide({ ...conteudo, template });
+  const imagem = desenharSlide({ ...conteudo, template, marca: m });
   const arquivo = `imagens/${id}.jpg`;
   writeFileSync(join(RAIZ, arquivo), imagem);
 

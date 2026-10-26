@@ -32,5 +32,3 @@ export const temasRecentes = (n = 20) => lerPosts().slice(-n).map((p) => p.tema)
 // Posição de leitura das mensagens do Telegram (para não processar a mesma duas vezes)
 export const lerOffset = () => ler("telegram.json", { offset: 0 }).offset;
 export const gravarOffset = (offset) => gravar("telegram.json", { offset });
-
-export const marca = () => JSON.parse(readFileSync(join(RAIZ, "marca.json"), "utf8"));

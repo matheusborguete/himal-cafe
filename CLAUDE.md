@@ -31,6 +31,9 @@ Node 22, JavaScript puro (ESM). Roda no GitHub Actions (gratuito em repositório
 Gera um post (Google News + Gemini + arte em canvas a partir de `templates/*.json`), manda para o Telegram com botões
 Aprovar/Gerar outro e publica pela Instagram API com login do Instagram (`graph.instagram.com`).
 Estado em `postador/dados/*.json`, imagens em `postador/imagens/`, servidas pelo jsDelivr fixado no commit.
+Marca e templates: editados no painel (`public/admin/postador.js`) e salvos no Firestore (`config/marca`, `templates/{nome}`,
+leitura pública). O postador lê via REST (`postador/lib/config.js`) e cai para `marca.json`/`templates/*.json` se estiver vazio.
+O desenho da arte é um só arquivo, `public/assets/desenho.js`, usado na prévia do navegador e no Node (`@napi-rs/canvas`).
 Workflows: `.github/workflows/postador-gerar.yml` (diário) e `postador-verificar.yml` (a cada 10 min).
 Ao vivo: `npm run escutar` publica na hora. Detalhes e setup das contas: [postador/README.md](postador/README.md).
 Segredos: `postador/.env` (fora do git) e Secrets do GitHub (`gh secret set -f postador/.env`). Nunca imprimir tokens.
