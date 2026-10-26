@@ -1,0 +1,76 @@
+/* Estilos do blog e do painel, na mesma identidade da landing page */
+:root{
+  --neve:#F5F3EE; --grafite:#1E1E1C; --pedra:#8C8A84;
+  --saanjh:#5B3F34; --gurans:#B8475A; --hiun:#E6D6B0;
+  --linha:#DEDAD1; --gurans-claro:#F1E3E3;
+  --serif:'Fraunces',Georgia,serif; --sans:'Inter',system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--neve);color:var(--grafite);font-family:var(--sans);font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.wrap{max-width:1040px;margin:0 auto;padding:0 24px}
+.narrow{max-width:720px}
+h1,h2,h3{font-family:var(--serif);font-weight:300;line-height:1.15;letter-spacing:-.01em}
+h1{font-size:clamp(36px,6vw,60px)}
+.eyebrow{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--pedra);margin-bottom:16px;display:block}
+.muted{color:var(--pedra)}
+
+header{padding:22px 0;border-bottom:1px solid var(--linha)}
+header .wrap{display:flex;justify-content:space-between;align-items:center}
+.logo{font-family:var(--serif);font-size:24px;letter-spacing:.32em;text-transform:uppercase;text-decoration:none}
+header nav{display:flex;gap:24px;align-items:center;font-size:14px}
+header nav a{text-decoration:none;color:var(--pedra)}
+header nav a:hover,header nav a.ativo{color:var(--grafite)}
+footer{padding:40px 0;font-size:13px;color:var(--pedra);text-align:center;border-top:1px solid var(--linha);margin-top:96px}
+
+.btn{display:inline-block;background:var(--gurans);color:#fff;text-decoration:none;font:500 15px var(--sans);padding:14px 28px;border:0;border-radius:2px;cursor:pointer}
+.btn:hover{background:#9d3a4b}
+.btn:disabled{opacity:.5;cursor:wait}
+.btn-line{background:transparent;color:var(--grafite);border:1px solid var(--grafite)}
+.btn-line:hover{background:var(--grafite);color:var(--neve)}
+
+/* lista do blog */
+.blog-topo{padding:72px 0 40px}
+.grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:28px}
+.card-post{background:#fff;border:1px solid var(--linha);text-decoration:none;display:flex;flex-direction:column;transition:transform .2s}
+.card-post:hover{transform:translateY(-2px)}
+.card-post img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:var(--gurans-claro)}
+.card-post .sem-img{aspect-ratio:4/3;background:linear-gradient(160deg,#fff,var(--gurans-claro))}
+.card-post div{padding:20px 22px 24px}
+.card-post h2{font-size:24px;margin:6px 0 8px}
+.card-post p{font-size:15px;color:#4a4a46}
+.vazio{padding:48px 0;color:var(--pedra)}
+
+/* post */
+article{padding:64px 0 0}
+article h1{margin-bottom:16px}
+article .capa{width:100%;height:auto;margin:32px 0;border:1px solid var(--linha);display:block}
+.conteudo h2{font-size:30px;margin:40px 0 12px}
+.conteudo h3{font-size:22px;font-weight:400;margin:28px 0 8px}
+.conteudo p{margin-top:16px}
+.conteudo ul{margin:16px 0 0 22px}
+.conteudo li+li{margin-top:6px}
+.voltar{display:inline-block;margin-top:48px;font-size:14px}
+
+/* painel */
+.painel{padding:56px 0}
+.caixa{background:#fff;border:1px solid var(--linha);padding:32px;margin-top:24px}
+label{display:block;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--pedra);margin:20px 0 6px}
+input,textarea{width:100%;font:16px var(--sans);padding:12px 14px;border:1px solid var(--linha);background:var(--neve);border-radius:2px}
+input:focus,textarea:focus{outline:2px solid var(--gurans);outline-offset:0}
+textarea{min-height:320px;resize:vertical;line-height:1.6}
+.dica{font-size:13px;color:var(--pedra);margin-top:6px}
+.preview-img{max-width:280px;margin-top:12px;border:1px solid var(--linha);display:none}
+.acoes{display:flex;gap:12px;align-items:center;margin-top:28px;flex-wrap:wrap}
+.msg{font-size:14px}
+.msg.erro{color:#a1283b}
+.msg.ok{color:#2f6b3a}
+.lista-posts{list-style:none;margin-top:12px}
+.lista-posts li{display:flex;justify-content:space-between;gap:16px;align-items:center;padding:12px 0;border-bottom:1px solid var(--linha);font-size:15px}
+.lista-posts button{background:none;border:0;color:#a1283b;cursor:pointer;font:14px var(--sans)}
+.topo-painel{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+
+@media(max-width:600px){
+  .caixa{padding:22px 16px}
+  .wrap{padding:0 16px}
+}

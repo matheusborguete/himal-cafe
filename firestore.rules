@@ -1,0 +1,25 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Só o admin do blog pode escrever. Qualquer um pode ler.
+    // Se criar uma cópia do projeto, troque o e-mail abaixo pelo do seu admin.
+    function ehAdmin() {
+      return request.auth != null
+        && request.auth.token.email == 'admin-himal@himal-cafe.web.app';
+    }
+
+    match /posts/{slug} {
+      allow read: if true;
+      allow delete: if ehAdmin();
+      allow create, update: if ehAdmin()
+        && request.resource.data.titulo is string
+        && request.resource.data.conteudo is string;
+    }
+
+    // Todo o resto fica fechado.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

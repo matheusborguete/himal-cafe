@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Painel Himal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/himal.css">
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <a class="logo" href="/">Himal</a>
+    <nav><a href="/blog/" target="_blank">Ver blog ↗</a><a id="sair" href="#" hidden>Sair</a></nav>
+  </div>
+</header>
+
+<main class="wrap narrow painel">
+
+  <!-- LOGIN -->
+  <section id="tela-login" hidden>
+    <span class="eyebrow">Área restrita</span>
+    <h1>Painel do blog</h1>
+    <form id="form-login" class="caixa">
+      <label for="email">Usuário</label>
+      <input id="email" autocomplete="username" required placeholder="admin-himal">
+      <label for="senha">Senha</label>
+      <input id="senha" type="password" autocomplete="current-password" required>
+      <div class="acoes"><button class="btn" type="submit">Entrar</button><span id="msg-login" class="msg erro"></span></div>
+    </form>
+  </section>
+
+  <!-- PAINEL -->
+  <section id="tela-painel" hidden>
+    <div class="topo-painel">
+      <div><span class="eyebrow">Painel do blog</span><h1>Novo post</h1></div>
+    </div>
+
+    <div class="caixa">
+      <label for="colar">Colar a resposta do agendador (opcional)</label>
+      <textarea id="colar" style="min-height:120px" placeholder="TÍTULO: ...&#10;RESUMO: ...&#10;TEXTO:&#10;..."></textarea>
+      <p class="dica">Cole o texto inteiro que o agendado do Claude/ChatGPT devolveu e clique em preencher.</p>
+      <div class="acoes"><button class="btn btn-line" type="button" id="preencher">Preencher campos</button></div>
+    </div>
+
+    <form id="form-post" class="caixa">
+      <label for="titulo">Título</label>
+      <input id="titulo" required maxlength="140">
+      <p class="dica">Endereço do post: <span id="previa-slug">/blog/…</span></p>
+
+      <label for="resumo">Resumo (aparece no Google e na lista do blog)</label>
+      <input id="resumo" required maxlength="220">
+
+      <label for="conteudo">Texto</label>
+      <textarea id="conteudo" required></textarea>
+      <p class="dica">Linha em branco separa parágrafos. Use "## " para subtítulo, "- " para lista e **negrito**.</p>
+
+      <label for="foto">Foto</label>
+      <input id="foto" type="file" accept="image/*">
+      <p class="dica">Ou cole o link de uma imagem:</p>
+      <input id="foto-url" type="url" placeholder="https://...">
+      <img id="previa-foto" class="preview-img" alt="">
+
+      <label for="alt">Descrição da foto (acessibilidade e SEO)</label>
+      <input id="alt" maxlength="160">
+
+      <div class="acoes">
+        <button class="btn" type="submit" id="publicar">Publicar no blog</button>
+        <span id="msg-post" class="msg"></span>
+      </div>
+    </form>
+
+    <div class="caixa">
+      <span class="eyebrow" style="margin:0">Posts publicados</span>
+      <ul id="lista" class="lista-posts"></ul>
+    </div>
+  </section>
+</main>
+
+<script type="module">
+import { app, db } from "/assets/firebase.js";
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { collection, doc, getDoc, getDocs, setDoc, deleteDoc, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// Usuário digita só "admin-himal"; completamos o e-mail.
+// O mesmo e-mail precisa estar liberado em firestore.rules.
+const DOMINIO = "@himal-cafe.web.app";
+
+const auth = getAuth(app);
+const $ = (id) => document.getElementById(id);
+
+// ---------- login ----------
+onAuthStateChanged(auth, (user) => {
+  $("tela-login").hidden = !!user;
+  $("tela-painel").hidden = !user;
+  $("sair").hidden = !user;
+  if (user) carregarLista();
+});
+
+$("form-login").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  $("msg-login").textContent = "";
+  let email = $("email").value.trim();
+  if (!email.includes("@")) email += DOMINIO;
+  try {
+    await signInWithEmailAndPassword(auth, email, $("senha").value);
+  } catch {
+    $("msg-login").textContent = "Usuário ou senha incorretos.";
+  }
+});
+
+$("sair").addEventListener("click", (e) => { e.preventDefault(); signOut(auth); });
+
+// ---------- colar resposta do agendador ----------
+// Formato esperado:  TÍTULO: ...  /  RESUMO: ...  /  TEXTO: (resto)
+$("preencher").addEventListener("click", () => {
+  const t = $("colar").value.replace(/\r/g, "");
+  const pega = (rotulo) => (t.match(new RegExp(`^\\s*\\**${rotulo}\\**\\s*:\\s*(.+)$`, "im")) || [])[1]?.trim() || "";
+  const texto = t.split(/^\s*\**TEXTO\**\s*:\s*$/im)[1];
+  if (pega("T[ÍI]TULO")) $("titulo").value = pega("T[ÍI]TULO");
+  if (pega("RESUMO")) $("resumo").value = pega("RESUMO");
+  if (pega("IMAGEM")) { $("foto-url").value = pega("IMAGEM"); mostrarPrevia(pega("IMAGEM")); }
+  if (pega("ALT")) $("alt").value = pega("ALT");
+  $("conteudo").value = (texto ?? t).trim();
+  $("titulo").dispatchEvent(new Event("input"));
+});
+
+// ---------- slug (endereço do post) ----------
+const criarSlug = (s) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase()
+  .replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 80);
+$("titulo").addEventListener("input", () => { $("previa-slug").textContent = "/blog/" + (criarSlug($("titulo").value) || "…"); });
+
+// ---------- foto ----------
+// Sem Cloud Storage (exige cartão), a foto é reduzida no navegador e
+// guardada dentro do próprio post no Firestore (limite de ~1 MB por documento).
+let fotoDataUrl = "";
+
+function mostrarPrevia(src) {
+  $("previa-foto").src = src;
+  $("previa-foto").style.display = src ? "block" : "none";
+}
+
+$("foto").addEventListener("change", async () => {
+  const arq = $("foto").files[0];
+  fotoDataUrl = arq ? await reduzirImagem(arq) : "";
+  mostrarPrevia(fotoDataUrl);
+});
+$("foto-url").addEventListener("input", () => { if (!fotoDataUrl) mostrarPrevia($("foto-url").value.trim()); });
+
+async function reduzirImagem(arquivo, larguraMax = 1200) {
+  const img = await createImageBitmap(arquivo);
+  const escala = Math.min(1, larguraMax / img.width);
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.round(img.width * escala);
+  canvas.height = Math.round(img.height * escala);
+  canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
+  let qualidade = 0.82, url;
+  do { url = canvas.toDataURL("image/jpeg", qualidade); qualidade -= 0.1; } while (url.length > 700_000 && qualidade > 0.3);
+  return url;
+}
+
+// ---------- publicar ----------
+$("form-post").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const msg = $("msg-post");
+  msg.className = "msg"; msg.textContent = "Publicando…";
+  $("publicar").disabled = true;
+  try {
+    // Evita sobrescrever um post com o mesmo endereço
+    let slug = criarSlug($("titulo").value), n = 2;
+    while ((await getDoc(doc(db, "posts", slug))).exists()) slug = `${criarSlug($("titulo").value)}-${n++}`;
+
+    await setDoc(doc(db, "posts", slug), {
+      titulo: $("titulo").value.trim(),
+      resumo: $("resumo").value.trim(),
+      conteudo: $("conteudo").value.trim(),
+      imagem: fotoDataUrl || $("foto-url").value.trim(),
+      imagemAlt: $("alt").value.trim(),
+      criadoEm: serverTimestamp(),
+    });
+    msg.className = "msg ok";
+    msg.innerHTML = `Publicado! <a href="/blog/${slug}" target="_blank">Ver post ↗</a>`;
+    e.target.reset(); $("colar").value = ""; fotoDataUrl = ""; mostrarPrevia("");
+    carregarLista();
+  } catch (err) {
+    console.error(err);
+    msg.className = "msg erro";
+    msg.textContent = "Erro ao publicar: " + (err.code || err.message);
+  } finally {
+    $("publicar").disabled = false;
+  }
+});
+
+// ---------- lista / apagar ----------
+async function carregarLista() {
+  const snap = await getDocs(query(collection(db, "posts"), orderBy("criadoEm", "desc")));
+  const ul = $("lista");
+  ul.innerHTML = snap.empty ? '<li class="muted">Nenhum post ainda.</li>' : "";
+  snap.forEach((d) => {
+    const li = document.createElement("li");
+    const a = document.createElement("a");
+    a.href = `/blog/${d.id}`; a.target = "_blank"; a.textContent = d.data().titulo;
+    const b = document.createElement("button");
+    b.textContent = "Apagar";
+    b.onclick = async () => { if (confirm(`Apagar "${d.data().titulo}"?`)) { await deleteDoc(d.ref); carregarLista(); } };
+    li.append(a, b); ul.append(li);
+  });
+}
+</script>
+</body>
+</html>

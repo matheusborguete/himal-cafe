@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blog Himal · Café especial do Nepal</title>
+<meta name="description" content="Histórias, preparo e origem dos cafés especiais do Himalaia. O blog da Himal.">
+<link rel="canonical" href="https://himal-cafe.web.app/blog/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/himal.css">
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <a class="logo" href="/">Himal</a>
+    <nav><a href="/">Café</a><a class="ativo" href="/blog/">Blog</a></nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="blog-topo">
+    <span class="eyebrow">Blog Himal</span>
+    <h1>Notas do alto.</h1>
+    <p class="muted" style="margin-top:12px;max-width:34em">Origem, preparo e cultura do café especial, das encostas do Himalaia até a sua xícara.</p>
+  </section>
+  <section id="posts" class="grade" aria-live="polite"><p class="vazio">Carregando…</p></section>
+</main>
+
+<footer><div class="wrap">Himal · Cafés do Himalaia</div></footer>
+
+<script type="module">
+import { db, formatarData } from "/assets/firebase.js";
+import { collection, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const alvo = document.getElementById("posts");
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+
+try {
+  const snap = await getDocs(query(collection(db, "posts"), orderBy("criadoEm", "desc"), limit(30)));
+  if (snap.empty) {
+    alvo.innerHTML = '<p class="vazio">Ainda não há posts. Volte em breve.</p>';
+  } else {
+    alvo.innerHTML = snap.docs.map((d) => {
+      const p = d.data();
+      const img = p.imagem ? `<img src="${p.imagem}" alt="${esc(p.imagemAlt || p.titulo)}" loading="lazy">` : '<span class="sem-img"></span>';
+      return `<a class="card-post" href="/blog/${d.id}">${img}<div>
+        <span class="eyebrow">${formatarData(p.criadoEm)}</span>
+        <h2>${esc(p.titulo)}</h2><p>${esc(p.resumo)}</p></div></a>`;
+    }).join("");
+  }
+} catch (e) {
+  console.error(e);
+  alvo.innerHTML = '<p class="vazio">Não foi possível carregar os posts agora.</p>';
+}
+</script>
+</body>
+</html>

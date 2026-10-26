@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blog Himal</title>
+<meta name="description" content="Blog da Himal, cafés especiais do Nepal.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/himal.css">
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <a class="logo" href="/">Himal</a>
+    <nav><a href="/">Café</a><a class="ativo" href="/blog/">Blog</a></nav>
+  </div>
+</header>
+
+<main class="wrap narrow">
+  <article id="post" aria-live="polite"><p class="muted">Carregando…</p></article>
+  <a class="voltar" href="/blog/">← Todos os posts</a>
+</main>
+
+<footer><div class="wrap">Himal · Cafés do Himalaia · <a href="/">Conheça o Kit Trilogia</a></div></footer>
+
+<script type="module">
+// Uma única página serve todos os posts: o endereço /blog/<slug> é
+// redirecionado para cá (ver "rewrites" no firebase.json).
+import { db, textoParaHtml, formatarData } from "/assets/firebase.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const alvo = document.getElementById("post");
+const slug = decodeURIComponent(location.pathname.replace(/\/+$/, "").split("/").pop());
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+
+const snap = slug && slug !== "post.html" ? await getDoc(doc(db, "posts", slug)) : null;
+
+if (!snap || !snap.exists()) {
+  alvo.innerHTML = "<h1>Post não encontrado.</h1>";
+} else {
+  const p = snap.data();
+  const url = `https://himal-cafe.web.app/blog/${slug}`;
+
+  // SEO: título, descrição, canonical e dados estruturados (BlogPosting)
+  document.title = `${p.titulo} · Blog Himal`;
+  document.querySelector('meta[name="description"]').content = p.resumo || p.titulo;
+  document.head.insertAdjacentHTML("beforeend", `<link rel="canonical" href="${url}">`);
+  const ld = document.createElement("script");
+  ld.type = "application/ld+json";
+  ld.textContent = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: p.titulo,
+    description: p.resumo,
+    datePublished: p.criadoEm?.toDate().toISOString(),
+    url,
+    publisher: { "@type": "Organization", name: "Himal", url: "https://himal-cafe.web.app/" },
+  });
+  document.head.appendChild(ld);
+
+  alvo.innerHTML = `
+    <span class="eyebrow">${formatarData(p.criadoEm)}</span>
+    <h1>${esc(p.titulo)}</h1>
+    <p class="muted" style="font-size:19px">${esc(p.resumo)}</p>
+    ${p.imagem ? `<img class="capa" src="${p.imagem}" alt="${esc(p.imagemAlt || p.titulo)}">` : ""}
+    <div class="conteudo">${textoParaHtml(p.conteudo || "")}</div>`;
+}
+</script>
+</body>
+</html>
