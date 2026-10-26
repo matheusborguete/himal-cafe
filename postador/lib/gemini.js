@@ -1,27 +1,39 @@
 // Gera o conteúdo do post com o Gemini (chave gratuita do Google AI Studio).
-const MODELO = process.env.GEMINI_MODEL || "gemini-flash-latest";
+// Modelos em ordem de preferência. Se o primeiro estiver sobrecarregado
+// (erro 503, comum no plano gratuito), tenta o seguinte.
+const MODELOS = (process.env.GEMINI_MODEL || "gemini-flash-latest,gemini-flash-lite-latest").split(",");
 
 async function chamarGemini(prompt) {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODELO}:generateContent`;
-  for (let tentativa = 1; tentativa <= 3; tentativa++) {
-    const res = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "x-goog-api-key": process.env.GEMINI_API_KEY },
-      body: JSON.stringify({
-        contents: [{ role: "user", parts: [{ text: prompt }] }],
-        // Pede a resposta já em JSON, para o código conseguir ler os campos
-        generationConfig: { temperature: 0.9, responseMimeType: "application/json" },
-      }),
-    });
-    const json = await res.json();
-    if (res.ok) return json.candidates[0].content.parts.map((p) => p.text || "").join("");
-    // Servidor sobrecarregado: espera e tenta de novo. Cota estourada: desiste.
-    if ((res.status === 503 || res.status === 500) && tentativa < 3) {
-      await new Promise((r) => setTimeout(r, tentativa * 5000));
-      continue;
+  let ultimoErro;
+  for (const modelo of MODELOS) {
+    for (let tentativa = 1; tentativa <= 2; tentativa++) {
+      try {
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelo}:generateContent`, {
+          method: "POST",
+          signal: AbortSignal.timeout(120000),
+          headers: { "Content-Type": "application/json", "x-goog-api-key": process.env.GEMINI_API_KEY },
+          body: JSON.stringify({
+            contents: [{ role: "user", parts: [{ text: prompt }] }],
+            // Pede a resposta já em JSON, para o código conseguir ler os campos
+            generationConfig: { temperature: 0.9, responseMimeType: "application/json" },
+          }),
+        });
+        const json = await res.json();
+        if (res.ok) {
+          console.log(`Gemini: ${modelo}`);
+          return json.candidates[0].content.parts.map((p) => p.text || "").join("");
+        }
+        ultimoErro = new Error(`Gemini ${res.status} (${modelo}): ${json.error?.message || JSON.stringify(json)}`);
+        // Sem crédito / chave inválida: não adianta tentar outro modelo
+        if (res.status === 400 || res.status === 401 || res.status === 402 || res.status === 403) throw ultimoErro;
+      } catch (e) {
+        if (e === ultimoErro) throw e;
+        ultimoErro = e; // tempo esgotado ou falha de rede
+      }
+      await new Promise((r) => setTimeout(r, 4000));
     }
-    throw new Error(`Gemini ${res.status}: ${json.error?.message || JSON.stringify(json)}`);
   }
+  throw ultimoErro;
 }
 
 /**
