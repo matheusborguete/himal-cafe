@@ -1,9 +1,8 @@
 // O que o bot faz com cada clique ou mensagem recebida no Telegram.
-// Usado pelo verificar.js (GitHub Actions) e pelo escutar.js (ao vivo na aula).
+// Usado pelo verificar.js (olha uma vez) e pelo escutar.js (fica ouvindo).
+// SPRINT 3: Aprovar só marca o post como aprovado. A publicação entra na sprint-4.
 import { telegram, mensagem, removerBotoes } from "./telegram.js";
-import { publicarImagem } from "./instagram.js";
 import { lerPosts, atualizarPost, lerOffset, gravarOffset } from "./estado.js";
-import { salvarNoGitHub } from "./github.js";
 import { gerarEEnviar } from "../gerar.js";
 
 /**
@@ -26,7 +25,7 @@ export async function processarNovidades(espera = 0) {
     // Primeira configuração: ainda não sabemos qual é o seu chat
     if (!chatPermitido) {
       console.log(`Chat encontrado: TELEGRAM_CHAT_ID=${chatId}`);
-      await mensagem(chatId, `Olá! Seu TELEGRAM_CHAT_ID é ${chatId}\nCopie esse número para o .env e para os Secrets do GitHub.`);
+      await mensagem(chatId, `Olá! Seu TELEGRAM_CHAT_ID é ${chatId}\nCopie esse número para o .env.`);
       continue;
     }
     if (chatId !== String(chatPermitido)) continue; // ignora estranhos
@@ -44,8 +43,6 @@ export async function processarNovidades(espera = 0) {
       await mensagem(chatId, `⚠️ Erro: ${e.message}`);
     }
   }
-
-  if (novidades.length) salvarNoGitHub("bot: atualiza estado do Telegram");
   return novidades.length;
 }
 
@@ -61,20 +58,12 @@ async function tratarBotao(clique, chatId) {
   }
 
   if (acao === "aprovar") {
-    await mensagem(chatId, "Publicando no Instagram…");
-    try {
-      const { id: igId, permalink } = await publicarImagem(post.imagemUrl, post.legenda);
-      atualizarPost(id, { status: "publicado", publicadoEm: new Date().toISOString(), igId, permalink });
-      await mensagem(chatId, `✅ Publicado!\n${permalink}`);
-    } catch (e) {
-      atualizarPost(id, { status: "erro", erro: e.message });
-      throw e;
-    }
+    atualizarPost(id, { status: "aprovado", aprovadoEm: new Date().toISOString() });
+    await mensagem(chatId, "✅ Aprovado! Na sprint-4 este clique publica no Instagram.");
   }
 
   if (acao === "outro") {
     atualizarPost(id, { status: "descartado" });
-    salvarNoGitHub(`post ${id}: descartado`);
     await mensagem(chatId, "Ok, descartado. Gerando outro…");
     await gerarEEnviar();
   }

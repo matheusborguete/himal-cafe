@@ -1,3 +1,6 @@
+> **Branch de segurança `sprint-3`** · Sprint 3: o rascunho chega no Telegram com Aprovar / Gerar outro. Aprovar só marca o post; a publicação entra na sprint-4.
+> Para voltar ao projeto completo, use a branch `main`.
+
 # Himal Café
 
 Site da **Himal**, com cafés especiais do Nepal, mais um blog e uma área logada para publicar posts.
