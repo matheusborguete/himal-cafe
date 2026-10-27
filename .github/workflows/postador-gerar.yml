@@ -1,9 +1,12 @@
-# Gera um post por dia e manda para aprovação no Telegram.
+# Gera um post por dia, manda para aprovação no Telegram e fica 4 horas
+# ouvindo: se você aprovar nesse intervalo, publica na hora.
 name: "Postador: gerar post"
 
 on:
   schedule:
-    - cron: "0 12 * * *"   # 12h UTC = 9h em Brasília
+    # 10h40 UTC = 7h40 em Brasília. O GitHub costuma atrasar os agendamentos
+    # de 10 a 30 minutos, então o rascunho chega por volta das 8h.
+    - cron: "40 10 * * *"
   workflow_dispatch:        # botão "Run workflow" para rodar na hora
 
 permissions:
@@ -14,9 +17,15 @@ concurrency: postador       # nunca roda junto com o verificar
 jobs:
   gerar:
     runs-on: ubuntu-latest
+    timeout-minutes: 260
     defaults:
       run:
         working-directory: postador
+    env:
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+      IG_TOKEN: ${{ secrets.IG_TOKEN }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -27,7 +36,5 @@ jobs:
           git config user.name "postador-himal"
           git config user.email "postador-himal@users.noreply.github.com"
       - run: node gerar.js
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+      - name: Ouvir o Telegram por 4 horas (aprovação publica na hora)
+        run: node escutar.js --minutos=240

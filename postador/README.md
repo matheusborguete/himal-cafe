@@ -4,7 +4,7 @@ O postador gera um post de Instagram por dia, pede sua aprovação no Telegram e
 É **100% gratuito e sem cartão**: roda no GitHub Actions, com Gemini (AI Studio), Telegram e Instagram.
 
 ```
-GitHub Actions (todo dia 9h)
+GitHub Actions (todo dia ~8h)
   → Google News (pauta atual)
   → Gemini escreve título, texto da arte e legenda (sem repetir temas)
   → arte 1080×1350 desenhada com um template da Himal (sem IA)
@@ -12,7 +12,7 @@ GitHub Actions (todo dia 9h)
   → Telegram: foto + legenda com [✅ Aprovar e publicar] [🔄 Gerar outro]
 
 Você clica em Aprovar
-  → (a cada 10 min no Actions, ou na hora com "npm run escutar")
+  → na hora, se aprovar nas 4 horas após o envio (ou com "npm run escutar")
   → Instagram: cria o container da imagem → publica → manda o link no Telegram
 ```
 
@@ -69,7 +69,7 @@ Envie as chaves do `.env` para os Secrets do repositório:
 ```bash
 gh secret set -f postador/.env
 ```
-Pronto. O workflow **Postador: gerar post** roda todo dia às 9h, e o **Postador: verificar aprovações** roda a cada 10 minutos.
+Pronto. O workflow **Postador: gerar post** roda todo dia por volta das 8h e fica 4 horas ouvindo o Telegram: se você aprovar nesse intervalo, publica na hora. Fora dessa janela, o **Postador: verificar aprovações** confere a cada 10 minutos, mas o GitHub não garante esse intervalo e pode atrasar bastante.
 Para testar na hora, abra a aba **Actions** do GitHub, escolha o workflow e clique em **Run workflow**.
 
 ## Personalizar

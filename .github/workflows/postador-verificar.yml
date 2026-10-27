@@ -1,4 +1,6 @@
 # Confere o Telegram: se você clicou em Aprovar, publica no Instagram.
+# É a "rede de segurança" para cliques fora das 4 horas de escuta do workflow
+# gerar. O GitHub não garante o intervalo: em horários cheios pode passar horas sem rodar.
 name: "Postador: verificar aprovações"
 
 on:
