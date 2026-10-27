@@ -20,7 +20,7 @@ Reserve **40 minutos antes da aula** para preparar o ambiente. Se algo travar, n
 | **Claude Code** | Construir o projeto conversando com a IA | **Pago** (a partir do Claude Pro, ~US$ 20/mês) | **Google Antigravity** (gratuito, com limite semanal) |
 | Tarefas agendadas no **Claude** (Cowork) | Relatórios automáticos | **Pago** (Claude Pro ou superior) | Tarefas agendadas do **ChatGPT** (até 3 no plano gratuito) ou do **Antigravity** |
 | **Semrush** | Pesquisa de SEO | Gratuito com 10 consultas por dia | Google Search Console, PageSpeed Insights |
-| Conectores de SEO no Claude | Auditoria com dados reais | **Windsor.ai** (Search Console) tem plano gratuito; Semrush e Ahrefs são pagos | Busca na web do próprio Claude |
+| Conector do Semrush no Claude | Concorrentes e palavras-chave | Usa os limites do seu plano do Semrush | Busca na web do próprio Claude |
 
 > Os preços e limites mudam com frequência. Confira no site de cada ferramenta.
 > Você **não precisa** assinar nada para a aula. Com o Antigravity você faz tudo de graça.
@@ -91,9 +91,9 @@ Não precisa vincular a uma Página do Facebook.
 Se você tem um site, crie um projeto gratuito em https://clarity.microsoft.com e cole o código no `<head>`.
 Quanto antes instalar, mais dados você terá na aula.
 
-### 8. Search Console + Windsor.ai (para a auditoria de SEO)
-Se você tem um site, adicione em https://search.google.com/search-console (verificação pela **tag HTML**).
-Depois, crie uma conta gratuita em https://windsor.ai e conecte a fonte **Google Search Console**. Na aula, vamos ligar o Windsor ao Claude.
+### 8. Semrush (opcional, para a auditoria de SEO)
+Crie uma conta em https://www.semrush.com. A conta gratuita permite cerca de 10 consultas por dia.
+Na aula, vamos ligar o Semrush ao Claude como conector, em Configurações → Conectores.
 
 ### 9. Criar o app na Meta (pode deixar para a aula)
 Faremos isso juntos, mas, se quiser adiantar:

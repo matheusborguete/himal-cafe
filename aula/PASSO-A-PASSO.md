@@ -60,36 +60,34 @@ Um **agendado** é um prompt que roda sozinho num horário: todo dia às 8h, tod
 | Conector | O que traz para a auditoria | Custo |
 |---|---|---|
 | Busca na web (nativo) | Lê as páginas: títulos, descrições, estrutura, conteúdo para IA | Incluso no Claude |
-| **Windsor.ai** | Google Search Console e GA4: buscas, cliques, impressões, posição | Plano gratuito (1 fonte de dados) |
+| **Semrush** (usado na aula) | Concorrentes, palavras-chave, volume, posição, backlinks | Usa os limites do seu plano do Semrush |
 | Microsoft Clarity | Comportamento: rolagem, cliques de raiva, páginas | Gratuito |
-| OpenRush | Palavras-chave, SERP, auditoria de página, backlinks | Conta grátis, paga por uso (créditos) |
-| Semrush · Ahrefs | Palavras-chave, backlinks, concorrentes | Exigem assinatura paga |
+| Windsor.ai | Google Search Console e GA4 do seu próprio site | Plano gratuito (1 fonte de dados) |
+| Ahrefs · OpenRush | Palavras-chave, SERP, backlinks | Pagos (assinatura ou créditos) |
 
-> Os conectores do diretório dependem do seu plano do Claude e mudam com frequência. Confira em Configurações → Conectores.
+> Os conectores do diretório dependem do seu plano do Claude e do plano de cada ferramenta. Confira em Configurações → Conectores.
 
-**Preparar o Search Console (uma vez):**
-1. Em https://search.google.com/search-console, adicione o seu site (propriedade de **prefixo de URL**) e verifique com a **tag HTML** no `<head>`.
-2. Crie uma conta gratuita em https://windsor.ai e conecte a fonte **Google Search Console**.
-3. No Claude, conecte o **Windsor.ai** em Configurações → Conectores.
+**Por que olhar os concorrentes?** O site da Himal é novo e ainda não tem dados de busca. Os concorrentes já têm. O Semrush mostra em quais palavras-chave eles aparecem, com que volume e em que posição, e isso vira a pauta do nosso site e do blog.
 
-> Site novo tem poucos dados de busca. O Search Console começa a mostrar números depois de alguns dias.
+**1. Auditar o site** (no Claude Chat, pela busca na web):
+> Faça uma auditoria de SEO e GEO de https://himal-cafe.web.app (home, /blog e um post do blog): títulos, descrições, headings, dados estruturados (JSON-LD), links internos e conteúdo para buscas feitas por IA (ChatGPT, Perplexity, AI Overviews). Entregue em tabela: problema · impacto (alto/médio/baixo) · como corrigir.
 
-**Teste rápido:**
-> Quais buscas trouxeram cliques para himal-cafe.web.app nos últimos 28 dias? Em que posição estamos?
+**2. Conectar o Semrush:** Configurações → Conectores → Explorar → **Semrush** → Conectar.
 
-**Prompt da auditoria** (no Claude Chat):
-> Faça uma auditoria de SEO e GEO de https://himal-cafe.web.app (home, /blog e um post do blog): títulos, descrições, headings, dados estruturados (JSON-LD), links internos, velocidade percebida e conteúdo para buscas feitas por IA (ChatGPT, Perplexity, AI Overviews).
-> Use o Search Console (pelo Windsor) para trazer buscas, cliques, impressões e posição média dos últimos 28 dias.
-> Entregue em tabela: problema · impacto (alto/médio/baixo) · evidência (de onde veio o dado) · como corrigir.
-> Depois, sugira 5 perguntas reais sobre café do Nepal que o blog deveria responder.
+**3. Estudar os concorrentes** (com o Semrush):
+> Quais são os principais concorrentes orgânicos para "café especial" e "café do Nepal" no Brasil? Traga as palavras-chave principais de cada um, o volume de busca e a posição.
 
-Na sequência, peça: *"Transforme isso numa lista de tarefas priorizada por impacto × esforço."*
+> Em quais palavras-chave eles aparecem e a Himal não? Escolha 10 com bom volume e dificuldade baixa ou média. Entregue em tabela: oportunidade · volume · concorrente · ação sugerida (página nova, post no blog ou ajuste).
 
-**Sem conector?** Rode só o prompt da auditoria sem a parte do Search Console. A busca na web já entrega a análise das páginas. O mesmo prompt funciona no ChatGPT e no Antigravity. Complete com as ferramentas gratuitas do Google: [PageSpeed Insights](https://pagespeed.web.dev), [Teste de pesquisa aprimorada](https://search.google.com/test/rich-results) e [Search Console](https://search.google.com/search-console).
+> Que perguntas sobre café especial as pessoas fazem? Sugira 5 posts para o blog da Himal.
 
-> **Semrush:** a conta gratuita no site permite cerca de 10 consultas por dia. O conector do Semrush no Claude exige assinatura paga.
+Outras perguntas que funcionam: o tráfego estimado de um concorrente, as páginas que mais trazem visitas para ele e de onde vêm os backlinks.
 
-**Transforme em agendado:** a auditoria vira uma tarefa semanal que compara com a semana anterior e avisa só o que piorou.
+**4. Fechar:** *"Junte a auditoria e as oportunidades numa lista de tarefas priorizada por impacto × esforço."*
+
+**Sem Semrush?** Faça a parte do site pela busca na web: o prompt é o mesmo e funciona no ChatGPT e no Antigravity. A conta gratuita no site do Semrush permite cerca de 10 consultas por dia. Complete com as ferramentas gratuitas do Google: [PageSpeed Insights](https://pagespeed.web.dev), [Teste de pesquisa aprimorada](https://search.google.com/test/rich-results) e [Search Console](https://search.google.com/search-console).
+
+**Transforme em agendado:** a análise vira uma tarefa semanal que acompanha os concorrentes e avisa só o que mudou.
 
 ### 1.3 Agendado do relatório do Clarity
 
