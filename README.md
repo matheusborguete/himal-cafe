@@ -1,3 +1,6 @@
+> **Branch de segurança `sprint-1`** · Sprint 1: painel /admin com a aba Postador do Instagram (marca + templates com prévia ao vivo). O código do postador começa na sprint-2.
+> Para voltar ao projeto completo, use a branch `main`.
+
 # Himal Café
 
 Site da **Himal**, com cafés especiais do Nepal, mais um blog e uma área logada para publicar posts.
