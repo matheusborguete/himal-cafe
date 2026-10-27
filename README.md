@@ -26,3 +26,10 @@ Abra este repositório no **Claude Code** e peça:
 > Siga o CLAUDE.md e crie a minha cópia deste projeto no meu Google Cloud.
 
 O passo a passo completo está no [CLAUDE.md](CLAUDE.md).
+
+## Material da aula
+
+- [Pré-requisitos](aula/PRE-REQUISITOS.md): prepare o ambiente antes da aula
+- [Passo a passo](aula/PASSO-A-PASSO.md): guia completo, com os prompts de cada sprint
+- [Evoluções](aula/EVOLUCOES.md): bônus e tarefas pós-aula
+- Etapas prontas: branches `sprint-0` a `sprint-5`
