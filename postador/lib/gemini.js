@@ -1,16 +1,17 @@
 // Gera o conteúdo do post com o Gemini (chave gratuita do Google AI Studio).
-// Modelos em ordem de preferência. Se o primeiro estiver sobrecarregado
-// (erro 503, comum no plano gratuito), tenta o seguinte.
+// Modelos em ordem de preferência. Se um estiver sobrecarregado (erro 503,
+// comum no plano gratuito) ou demorar demais, passa NA HORA para o próximo.
+// Dá duas voltas na lista antes de desistir.
 const MODELOS = (process.env.GEMINI_MODEL || "gemini-flash-latest,gemini-flash-lite-latest").split(",");
 
 async function chamarGemini(prompt) {
   let ultimoErro;
-  for (const modelo of MODELOS) {
-    for (let tentativa = 1; tentativa <= 2; tentativa++) {
+  for (let volta = 1; volta <= 2; volta++) {
+    for (const modelo of MODELOS) {
       try {
         const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelo}:generateContent`, {
           method: "POST",
-          signal: AbortSignal.timeout(120000),
+          signal: AbortSignal.timeout(25000), // resposta normal: 2 a 15 s
           headers: { "Content-Type": "application/json", "x-goog-api-key": process.env.GEMINI_API_KEY },
           body: JSON.stringify({
             contents: [{ role: "user", parts: [{ text: prompt }] }],
@@ -30,8 +31,9 @@ async function chamarGemini(prompt) {
         if (e === ultimoErro) throw e;
         ultimoErro = e; // tempo esgotado ou falha de rede
       }
-      await new Promise((r) => setTimeout(r, 4000));
+      console.log(`Gemini: ${modelo} indisponível, tentando o próximo`);
     }
+    await new Promise((r) => setTimeout(r, 5000)); // respira antes da segunda volta
   }
   throw ultimoErro;
 }
