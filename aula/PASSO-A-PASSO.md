@@ -15,7 +15,7 @@ Antes de começar, faça os [pré-requisitos](PRE-REQUISITOS.md).
 
 - [Parte 1: Agendados de IA (19h00)](#parte-1-agendados-de-ia)
   - [1.1 Claude × ChatGPT × Antigravity](#11-claude--chatgpt--antigravity)
-  - [1.2 Auditoria de SEO com plugin](#12-auditoria-de-seo-com-plugin-do-claude-code)
+  - [1.2 Auditoria de SEO com conectores](#12-auditoria-de-seo-com-conectores-no-claude)
   - [1.3 Agendado do Clarity](#13-agendado-do-relatório-do-clarity)
   - [1.4 Agendado de post de blog](#14-agendado-de-post-de-blog)
 - [Parte 2: Arquitetura e primeiras sprints (20h25)](#parte-2-arquitetura-e-primeiras-sprints)
@@ -51,45 +51,43 @@ Um **agendado** é um prompt que roda sozinho num horário: todo dia às 8h, tod
 
 > **Regra de ouro:** o agendado roda sem você olhando. Escreva o prompt como uma **ordem de serviço completa**, com objetivo, fontes, formato da resposta e o que fazer quando faltar dado.
 
-### 1.2 Auditoria de SEO com plugin do Claude Code
+### 1.2 Auditoria de SEO com conectores no Claude
 
-**O que é um plugin:** é um pacote que ensina habilidades novas ao Claude Code. Ele pode trazer comandos (`/seo audit`), skills (instruções especializadas), agentes e conectores. Você instala com um comando e ele fica disponível em qualquer projeto.
+**O que é um conector:** é uma ponte entre o Claude e outra ferramenta (padrão MCP). Com ele, o Claude **lê dados reais** da ferramenta em vez de supor. Você conecta uma vez e ele fica disponível no Chat, no Cowork e nos agendados.
 
-Vamos usar o **Claude SEO** (gratuito, código aberto, licença MIT): https://github.com/AgriciDaniel/claude-seo
+**Onde:** Claude → **Configurações → Conectores → Explorar** → escolha o conector → **Conectar** (você faz login na ferramenta e autoriza). Dá para desconectar a qualquer momento.
 
-**Instalar** (dentro do Claude Code):
-```
-/plugin marketplace add AgriciDaniel/claude-seo
-```
-```
-/plugin install claude-seo@agricidaniel-claude-seo
-```
-```
-/seo setup
-```
-O `/seo setup` prepara o Python e um navegador invisível, que ele usa para ler o site como o Google lê.
+| Conector | O que traz para a auditoria | Custo |
+|---|---|---|
+| Busca na web (nativo) | Lê as páginas: títulos, descrições, estrutura, conteúdo para IA | Incluso no Claude |
+| **Windsor.ai** | Google Search Console e GA4: buscas, cliques, impressões, posição | Plano gratuito (1 fonte de dados) |
+| Microsoft Clarity | Comportamento: rolagem, cliques de raiva, páginas | Gratuito |
+| OpenRush | Palavras-chave, SERP, auditoria de página, backlinks | Conta grátis, paga por uso (créditos) |
+| Semrush · Ahrefs | Palavras-chave, backlinks, concorrentes | Exigem assinatura paga |
 
-**Auditar o site:**
-```
-/seo audit https://himal-cafe.web.app
-```
-Outros comandos úteis:
-- `/seo page <url>`: analisa uma página a fundo.
-- `/seo geo <url>`: verifica se o site está pronto para buscas feitas por IA (ChatGPT, Perplexity, AI Overviews).
-- `/seo schema <url>`: confere os dados estruturados (JSON-LD).
-- `/seo technical <url>`: velocidade, indexação e sitemap.
+> Os conectores do diretório dependem do seu plano do Claude e mudam com frequência. Confira em Configurações → Conectores.
 
-**Alternativa oficial da Anthropic** (skill de auditoria do pacote de marketing):
-```bash
-npx -y skills add anthropics/knowledge-work-plugins --skill seo-audit --agent claude-code
-```
+**Preparar o Search Console (uma vez):**
+1. Em https://search.google.com/search-console, adicione o seu site (propriedade de **prefixo de URL**) e verifique com a **tag HTML** no `<head>`.
+2. Crie uma conta gratuita em https://windsor.ai e conecte a fonte **Google Search Console**.
+3. No Claude, conecte o **Windsor.ai** em Configurações → Conectores.
 
-**Sem Claude Code?** No Antigravity, peça:
-> Faça uma auditoria de SEO e GEO de https://himal-cafe.web.app: títulos, descrições, headings, dados estruturados, velocidade, links internos, conteúdo para buscas por IA. Entregue em tabela: problema, impacto (alto/médio/baixo), como corrigir.
+> Site novo tem poucos dados de busca. O Search Console começa a mostrar números depois de alguns dias.
 
-Complete com ferramentas gratuitas do Google: [PageSpeed Insights](https://pagespeed.web.dev), [Teste de pesquisa aprimorada](https://search.google.com/test/rich-results) e [Search Console](https://search.google.com/search-console).
+**Teste rápido:**
+> Quais buscas trouxeram cliques para himal-cafe.web.app nos últimos 28 dias? Em que posição estamos?
 
-> **Semrush:** a conta gratuita permite cerca de 10 consultas por dia. Dá para mostrar a pesquisa de palavra-chave de uma marca real, mas não para o dia a dia.
+**Prompt da auditoria** (no Claude Chat):
+> Faça uma auditoria de SEO e GEO de https://himal-cafe.web.app (home, /blog e um post do blog): títulos, descrições, headings, dados estruturados (JSON-LD), links internos, velocidade percebida e conteúdo para buscas feitas por IA (ChatGPT, Perplexity, AI Overviews).
+> Use o Search Console (pelo Windsor) para trazer buscas, cliques, impressões e posição média dos últimos 28 dias.
+> Entregue em tabela: problema · impacto (alto/médio/baixo) · evidência (de onde veio o dado) · como corrigir.
+> Depois, sugira 5 perguntas reais sobre café do Nepal que o blog deveria responder.
+
+Na sequência, peça: *"Transforme isso numa lista de tarefas priorizada por impacto × esforço."*
+
+**Sem conector?** Rode só o prompt da auditoria sem a parte do Search Console. A busca na web já entrega a análise das páginas. O mesmo prompt funciona no ChatGPT e no Antigravity. Complete com as ferramentas gratuitas do Google: [PageSpeed Insights](https://pagespeed.web.dev), [Teste de pesquisa aprimorada](https://search.google.com/test/rich-results) e [Search Console](https://search.google.com/search-console).
+
+> **Semrush:** a conta gratuita no site permite cerca de 10 consultas por dia. O conector do Semrush no Claude exige assinatura paga.
 
 **Transforme em agendado:** a auditoria vira uma tarefa semanal que compara com a semana anterior e avisa só o que piorou.
 
@@ -230,7 +228,7 @@ gh repo create himal-ao-vivo --public --source . --push
 **3. Abrir no Claude Code ou no Antigravity.** Abra a pasta `himal-ao-vivo` e peça:
 > Leia o CLAUDE.md e me explique a estrutura deste projeto em 5 linhas.
 
-**4. Firebase (opcional para alunos).** Se você fez o passo 9 dos pré-requisitos, já tem o seu projeto. Se não, siga sem o painel: na Sprint 1, os templates ficam em arquivo.
+**4. Firebase (opcional para alunos).** Se você fez o passo 10 dos pré-requisitos, já tem o seu projeto. Se não, siga sem o painel: na Sprint 1, os templates ficam em arquivo.
 
 > **Como pedir para a IA, em toda sprint:**
 > 1. Diga **o quê** e **para quê**, não só o "como".
@@ -443,6 +441,8 @@ Depois, copie o seu `postador/.env` para a nova pasta e rode `npm install` dentr
 | `Gemini 503 ... overloaded` | Plano gratuito congestionado | Espere 1 minuto ou deixe o código cair para o modelo reserva |
 | `Gemini 404 ... no longer available` | Modelo antigo desativado | Use `gemini-flash-latest` |
 | O bot não responde | Token errado ou nenhum "oi" enviado | Confira o `TELEGRAM_BOT_TOKEN` e mande **oi** para o bot |
+| O rascunho chegou no celular, mas não no Telegram Web | O Telegram Web às vezes não atualiza sozinho | Recarregue a página ou use o app do celular ou o Telegram Desktop |
+| O workflow demora para mandar o rascunho | O Gemini gratuito está sobrecarregado | O código troca para o modelo reserva sozinho. Normalmente leva menos de 1 minuto |
 | "Esse rascunho já foi resolvido" | Clique duplo ou rascunho antigo | Gere outro com `/gerar` |
 | Instagram `(#10) ... not allowed` ou sem permissão | Convite de testador não aceito | Aceite no Instagram: Apps e sites → Convites de testador |
 | Instagram `Invalid OAuth access token` | Token vencido (60 dias) ou copiado pela metade | Gere outro token no painel da Meta |

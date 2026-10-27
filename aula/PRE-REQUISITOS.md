@@ -20,6 +20,7 @@ Reserve **40 minutos antes da aula** para preparar o ambiente. Se algo travar, n
 | **Claude Code** | Construir o projeto conversando com a IA | **Pago** (a partir do Claude Pro, ~US$ 20/mês) | **Google Antigravity** (gratuito, com limite semanal) |
 | Tarefas agendadas no **Claude** (Cowork) | Relatórios automáticos | **Pago** (Claude Pro ou superior) | Tarefas agendadas do **ChatGPT** (até 3 no plano gratuito) ou do **Antigravity** |
 | **Semrush** | Pesquisa de SEO | Gratuito com 10 consultas por dia | Google Search Console, PageSpeed Insights |
+| Conectores de SEO no Claude | Auditoria com dados reais | **Windsor.ai** (Search Console) tem plano gratuito; Semrush e Ahrefs são pagos | Busca na web do próprio Claude |
 
 > Os preços e limites mudam com frequência. Confira no site de cada ferramenta.
 > Você **não precisa** assinar nada para a aula. Com o Antigravity você faz tudo de graça.
@@ -44,7 +45,6 @@ Instale nesta ordem (Windows ou Mac):
 - [ ] **Uma IA de programação**, escolha uma:
   - **Claude Code** (se você tem Claude Pro): https://claude.com/claude-code. O aplicativo desktop já inclui o Claude Code.
   - **Google Antigravity** (gratuito): https://antigravity.google
-- [ ] **Python 3.11 ou mais novo**: https://www.python.org/downloads. Só é necessário para o plugin de auditoria de SEO.
 
 Confira se deu certo. Abra o terminal (no Windows, PowerShell; no Mac, Terminal) e rode:
 
@@ -91,13 +91,17 @@ Não precisa vincular a uma Página do Facebook.
 Se você tem um site, crie um projeto gratuito em https://clarity.microsoft.com e cole o código no `<head>`.
 Quanto antes instalar, mais dados você terá na aula.
 
-### 8. Criar o app na Meta (pode deixar para a aula)
+### 8. Search Console + Windsor.ai (para a auditoria de SEO)
+Se você tem um site, adicione em https://search.google.com/search-console (verificação pela **tag HTML**).
+Depois, crie uma conta gratuita em https://windsor.ai e conecte a fonte **Google Search Console**. Na aula, vamos ligar o Windsor ao Claude.
+
+### 9. Criar o app na Meta (pode deixar para a aula)
 Faremos isso juntos, mas, se quiser adiantar:
 1. Entre em https://developers.facebook.com com sua conta do Facebook e aceite os termos de desenvolvedor.
 2. **Meus apps → Criar app** → caso de uso **Gerenciar mensagens e conteúdo no Instagram**.
 3. Pare aqui. O restante (testador e token) fazemos na aula.
 
-### 9. Sua cópia do site (Firebase, sem cartão)
+### 10. Sua cópia do site (Firebase, sem cartão)
 Para ter **seu próprio** painel com a aba do postador:
 1. Clone o ponto de partida da aula:
    ```bash
