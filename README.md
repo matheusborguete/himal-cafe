@@ -1,3 +1,6 @@
+> **Branch de segurança `sprint-4`** · Sprint 4: aprovar no Telegram publica no Instagram. Roda no computador (npm run gerar + npm run escutar). Falta o agendamento no GitHub Actions.
+> Para voltar ao projeto completo, use a branch `main`.
+
 # Himal Café
 
 Site da **Himal**, com cafés especiais do Nepal, mais um blog e uma área logada para publicar posts.
