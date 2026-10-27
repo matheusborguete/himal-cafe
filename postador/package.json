@@ -8,9 +8,7 @@
   },
   "scripts": {
     "slide": "node --env-file-if-exists=.env testar-slide.js",
-    "gerar": "node --env-file-if-exists=.env gerar.js",
-    "verificar": "node --env-file-if-exists=.env verificar.js",
-    "escutar": "node --env-file-if-exists=.env escutar.js"
+    "gerar": "node --env-file-if-exists=.env gerar.js"
   },
   "dependencies": {
     "@napi-rs/canvas": "^1.0.3"

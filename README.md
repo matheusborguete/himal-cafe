@@ -1,3 +1,6 @@
+> **Branch de segurança `sprint-2`** · Sprint 2: npm run gerar busca a pauta, escreve com o Gemini e desenha a arte em postador/imagens/. Ainda sem Telegram e sem Instagram.
+> Para voltar ao projeto completo, use a branch `main`.
+
 # Himal Café
 
 Site da **Himal**, com cafés especiais do Nepal, mais um blog e uma área logada para publicar posts.
