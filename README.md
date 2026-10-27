@@ -1,3 +1,6 @@
+> **Branch de segurança `sprint-0`** · Sprint 0: ponto de partida da aula. Site, blog, painel do blog e Clarity. Sem postador.
+> Para voltar ao projeto completo, use a branch `main`.
+
 # Himal Café
 
 Site da **Himal**, com cafés especiais do Nepal, mais um blog e uma área logada para publicar posts.
