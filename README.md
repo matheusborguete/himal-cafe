@@ -1,3 +1,6 @@
+> **Branch de segurança `sprint-5`** · Sprint 5: tudo pronto, com GitHub Actions (gera todo dia ~8h e publica na aprovação). Histórico de posts zerado.
+> Para voltar ao projeto completo, use a branch `main`.
+
 # Himal Café
 
 Site da **Himal**, com cafés especiais do Nepal, mais um blog e uma área logada para publicar posts.
