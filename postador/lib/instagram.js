@@ -1,7 +1,14 @@
-// Publica no Instagram pela "Instagram API com login do Instagram".
+// Publica no Instagram pela API do Instagram.
 // Não precisa de Página do Facebook: só uma conta profissional e um token.
 // A publicação tem 2 passos: (1) criar o "container" com a imagem, (2) publicar.
-const BASE = "https://graph.instagram.com/v23.0";
+//
+// Dois tipos de token, conforme a idade do app na Meta:
+// - IGAA… (apps antigos, "API com login do Instagram"): usa graph.instagram.com
+//   e descobre sozinho o id da conta.
+// - EAA…  (apps novos, "login unificado"): usa graph.facebook.com e precisa do
+//   id da conta do Instagram em IG_USER_ID (o número abaixo do @ no painel da Meta).
+const TOKEN_UNIFICADO = (process.env.IG_TOKEN || "").startsWith("EAA");
+const BASE = TOKEN_UNIFICADO ? "https://graph.facebook.com/v23.0" : "https://graph.instagram.com/v23.0";
 const esperar = (ms) => new Promise((r) => setTimeout(r, ms));
 
 async function chamar(metodo, caminho, params = {}) {
@@ -29,7 +36,14 @@ async function comRepeticao(acao, tentativas = 8) {
   }
 }
 
-export const minhaConta = () => chamar("GET", "me", { fields: "user_id,username" });
+export async function minhaConta() {
+  if (!TOKEN_UNIFICADO) return chamar("GET", "me", { fields: "user_id,username" });
+  // Token do login unificado: o /me não traz a conta, então usamos o IG_USER_ID
+  const id = process.env.IG_USER_ID;
+  if (!id) throw new Error("Instagram: token EAA… (login unificado) precisa do IG_USER_ID no .env");
+  const { username } = await chamar("GET", id, { fields: "username" });
+  return { user_id: id, username };
+}
 
 /**
  * @param {string} imagemUrl  URL PÚBLICA de um JPEG (o Instagram baixa a imagem dali)
