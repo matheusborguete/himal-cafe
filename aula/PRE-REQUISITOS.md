@@ -99,7 +99,7 @@ Na aula, vamos ligar o Semrush ao Claude como conector, em Configurações → C
 Faremos isso juntos, mas, se quiser adiantar:
 1. Entre em https://developers.facebook.com com sua conta do Facebook e aceite os termos de desenvolvedor.
 2. **Meus apps → Criar app** → caso de uso **Gerenciar mensagens e conteúdo no Instagram**.
-3. Pare aqui. O restante (testador e token) fazemos na aula.
+3. Pare aqui. O restante (testador, configuração do login unificado e token) fazemos na aula.
 
 ### 10. Sua cópia do site (Firebase, sem cartão)
 Para ter **seu próprio** painel com a aba do postador:

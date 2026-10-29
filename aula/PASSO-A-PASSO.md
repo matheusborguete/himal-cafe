@@ -192,7 +192,7 @@ O painel do blog (`/admin`) tem o botão **Preencher campos**: você cola a resp
 - **Conta profissional** do Instagram: exigida para publicar via API.
 - **App de desenvolvedor:** a "identidade" do seu robô para a Meta.
 - **Testador do Instagram:** em modo de desenvolvimento, o app só publica em contas convidadas como testadoras. É o seu caso, então não precisa de revisão da Meta.
-- **Token de acesso:** a senha que autoriza o app a publicar na conta. Vale 60 dias.
+- **Token de acesso:** a senha que autoriza o app a publicar na conta. Apps novos (login unificado) geram um token `EAA…` que não expira; apps antigos geravam `IGAA…`, válido por 60 dias.
 
 **Telegram**
 - **@BotFather:** o bot que cria bots. Ele entrega o **token**.
@@ -342,21 +342,28 @@ npm run escutar
 **1. Criar o app na Meta** (só o professor faz ao vivo; os alunos acompanham)
 1. Em https://developers.facebook.com: **Meus apps → Criar app**.
 2. Nome: `Postador Himal ao vivo`. Caso de uso: **Gerenciar mensagens e conteúdo no Instagram**. Não precisa vincular portfólio empresarial.
-3. No painel do app: **Instagram → Configuração da API com login do Instagram**.
-4. Em **Funções do app → Funções → Adicionar pessoas → Testador do Instagram**, digite o @ da conta da marca.
-5. Aceite o convite **no Instagram**: **Configurações → Permissões de sites e apps → Apps e sites → Convites de testador → Aceitar**. Pelo computador, use instagram.com → Configurações → Apps e sites.
-6. Volte em **Gerar tokens de acesso → Adicionar conta**, entre com a conta da marca, autorize e copie o token.
-7. No `.env`:
+3. Em **Funções do app → Funções → Adicionar pessoas → Testador do Instagram**, digite o @ da conta da marca.
+4. Aceite o convite **no Instagram**: **Configurações → Permissões de sites e apps → Apps e sites → Convites de testador → Aceitar**. Pelo computador, use instagram.com → Configurações → Apps e sites.
+5. No painel do app: **Casos de uso → API do Instagram → API setup with Unified login** (configuração da API com login unificado).
+6. **Etapa 1 · Configure seu app:** clique em **Criar nova configuração**, aceite o padrão (token do usuário do sistema, ativo: conta do Instagram) e salve. Sem essa etapa, o painel avisa "Selecione uma configuração na Etapa 1".
+7. **Etapa 2 · Gerar tokens de acesso:** **Adicionar conta** → entre com o **Instagram** da marca e autorize → **Gerar token** → copie.
+8. Copie também o **número abaixo do @** da conta (ex.: `17841469781987923`). É o id da conta do Instagram, não é segredo.
+9. No `.env`:
    ```
    IG_TOKEN=cole_aqui
+   IG_USER_ID=numero_abaixo_do_@
    ```
 
+> **Por que mudou?** Desde outubro de 2026, apps novos da Meta não têm mais a "API com login do Instagram". O painel mostra o aviso "Seu app usa a configuração da API com login unificado". O token agora começa com **`EAA`** (antes era `IGAA`) e funciona pelo endereço do Facebook (`graph.facebook.com`), junto com o id da conta.
 > O app fica em **modo de desenvolvimento**. Para publicar na própria conta, não precisa de revisão da Meta.
-> O token vale **60 dias**. Anote na agenda para gerar outro (ou faça a evolução de renovação automática).
+> O token do login unificado é um **token do usuário do sistema**: o painel indica que ele **não expira**. Tokens `IGAA` de apps antigos valem 60 dias.
 
 **2. Prompt para o Claude Code:**
-> Ao clicar em Aprovar, publique no Instagram pela **Instagram API com login do Instagram** (`graph.instagram.com`, versão v23.0, token em `IG_TOKEN`):
-> 1. Descubra o id da conta com `/me`.
+> Ao clicar em Aprovar, publique no Instagram pela **API do Instagram** (versão v23.0, token em `IG_TOKEN`):
+> - Se o token começar com `EAA` (app novo, login unificado), use `graph.facebook.com` e o id da conta em `IG_USER_ID`.
+> - Se começar com `IGAA` (app antigo), use `graph.instagram.com` e descubra o id com `/me`.
+>
+> 1. Descubra o id da conta.
 > 2. Crie o container com `image_url` e `caption`.
 > 3. Espere o container ficar `FINISHED`.
 > 4. Publique com `/media_publish`, pegue o `permalink` e mande "✅ Publicado! <link>" no Telegram.
@@ -443,7 +450,9 @@ Depois, copie o seu `postador/.env` para a nova pasta e rode `npm install` dentr
 | O workflow demora para mandar o rascunho | O Gemini gratuito está sobrecarregado | O código troca para o modelo reserva sozinho. Normalmente leva menos de 1 minuto |
 | "Esse rascunho já foi resolvido" | Clique duplo ou rascunho antigo | Gere outro com `/gerar` |
 | Instagram `(#10) ... not allowed` ou sem permissão | Convite de testador não aceito | Aceite no Instagram: Apps e sites → Convites de testador |
-| Instagram `Invalid OAuth access token` | Token vencido (60 dias) ou copiado pela metade | Gere outro token no painel da Meta |
+| Instagram `Invalid OAuth access token` ou `Cannot parse access token` | Token `EAA…` sem `IG_USER_ID` no `.env`, token vencido ou copiado pela metade | Preencha `IG_USER_ID` (número abaixo do @ no painel da Meta) e confira se o código é a versão nova. Se persistir, gere outro token |
+| Painel da Meta: "Selecione uma configuração na Etapa 1" | Faltou a configuração do login unificado | Em **Etapa 1**, clique em **Criar nova configuração**, salve e gere o token de novo |
+| Instagram `The image format is not supported` | Falha passageira ao baixar a imagem | Tente de novo (Gerar outro ou aprovar outra vez) |
 | Instagram não baixa a imagem | URL não pública | Confira se o repositório é **público** e se o push foi feito |
 | Aprovei e nada aconteceu | Ninguém estava ouvindo | Rode `npm run escutar` ou o workflow manual |
 | `git push` recusado com `workflow` | O login do GitHub sem permissão de workflows | Rode `gh auth refresh -h github.com -s workflow` |

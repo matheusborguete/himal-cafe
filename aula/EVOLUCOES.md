@@ -53,6 +53,8 @@ Hoje o agendado escreve e você cola no painel. Aqui, o robô escreve, você apr
 Lembre que o GitHub pode atrasar o cron em alguns minutos.
 
 ### 6. Renovar o token do Instagram sozinho ⭐
+Só para tokens `IGAA…` (apps antigos, 60 dias). O token `EAA…` do login unificado não expira, então pule esta evolução.
+
 > Crie um workflow mensal que chama `GET https://graph.instagram.com/refresh_access_token?grant_type=ig_refresh_token&access_token=...` e atualiza o secret `IG_TOKEN` com `gh secret set`. Use um token pessoal do GitHub (`GH_PAT`, com permissão de secrets) guardado como secret. Avise no Telegram quando renovar.
 
 ### 7. Métricas do post no Telegram ⭐⭐
