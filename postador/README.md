@@ -43,17 +43,20 @@ Você clica em Aprovar
 4. Rode `npm run verificar`. O bot responde com o seu `TELEGRAM_CHAT_ID`.
 
 ### 3. Instagram (publicação)
-Usa a **Instagram API com login do Instagram**: não precisa de Página do Facebook.
+Usa a **API do Instagram**: não precisa de Página do Facebook. Funciona com os dois tipos de token da Meta:
+`EAA…` (apps novos, login unificado: `graph.facebook.com` + `IG_USER_ID`) e `IGAA…` (apps antigos: `graph.instagram.com`).
 1. No app do Instagram: **Configurações → Tipo de conta e ferramentas → Mudar para conta profissional** (Criador ou Empresa).
 2. Em https://developers.facebook.com, entre e clique em **Criar app**. É preciso ter uma conta do Facebook só para entrar no painel de desenvolvedor.
    - Caso de uso: **Gerenciar mensagens e conteúdo no Instagram**.
    - Não precisa vincular portfólio empresarial.
-3. No painel do app: **Instagram → Configuração da API com login do Instagram**.
-4. Em **Funções do app → Funções**, adicione a conta da marca como **Testador do Instagram**.
+3. Em **Funções do app → Funções**, adicione a conta da marca como **Testador do Instagram**.
    - Aceite o convite no Instagram: **Configurações → Permissões de sites e apps → Apps e sites → Convites de testador**.
-5. Volte em **Gerar tokens de acesso → Adicionar conta**, entre com a conta da marca e copie o token para `IG_TOKEN`.
+4. No painel do app: **Casos de uso → API do Instagram → API setup with Unified login**.
+   - **Etapa 1:** **Criar nova configuração** (padrão: token do usuário do sistema, conta do Instagram) e salvar.
+   - **Etapa 2:** **Adicionar conta** → entre com o Instagram da marca → **Gerar token** → copie para `IG_TOKEN`.
+   - Copie o **número abaixo do @** da conta para `IG_USER_ID`.
    - O app pode ficar em modo de desenvolvimento: publicar na própria conta não exige revisão da Meta.
-   - O token vale **60 dias**. Para renovar, gere outro no mesmo lugar.
+   - Token `EAA…` (usuário do sistema): o painel indica que não expira. Token `IGAA…` (apps antigos): vale 60 dias.
 
 ### 4. Rodar no seu computador
 ```bash
