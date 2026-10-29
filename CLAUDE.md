@@ -29,7 +29,8 @@ firestore.rules       leitura pública; escrita só para o e-mail do admin
 
 Node 22, JavaScript puro (ESM). Roda no GitHub Actions (gratuito em repositório público).
 Gera um post (Google News + Gemini + arte em canvas a partir de `templates/*.json`), manda para o Telegram com botões
-Aprovar/Gerar outro e publica pela Instagram API com login do Instagram (`graph.instagram.com`).
+Aprovar/Gerar outro e publica pela API do Instagram: token `EAA…` (apps novos, login unificado) usa `graph.facebook.com` + `IG_USER_ID`;
+token `IGAA…` (apps antigos) usa `graph.instagram.com`. Lógica em `postador/lib/instagram.js`.
 Estado em `postador/dados/*.json`, imagens em `postador/imagens/`, servidas pelo jsDelivr fixado no commit.
 Marca e templates: editados no painel (`public/admin/postador.js`) e salvos no Firestore (`config/marca`, `templates/{nome}`,
 leitura pública). O postador lê via REST (`postador/lib/config.js`) e cai para `marca.json`/`templates/*.json` se estiver vazio.
